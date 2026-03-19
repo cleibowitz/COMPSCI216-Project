@@ -32,6 +32,7 @@ We investigate three research questions:
 - **RQ2:** How sensitive are these findings to modeling choices, particularly the length of the rolling normalization window used to compute z-scores?
 - **RQ3:** Does spread behavior differ across monetary policy regimes, specifically periods of rising versus falling or stable federal funds rates?
 
+Note: These research questions have changed slightly from the original project proposal due to complications in accessing Bloomberg Terminal data. We hope to access this data for the final project submission and incorporate our original research questions, but this pivot was required at the moment due to the lack of granular data.
 # Data Sources
 
 ## FRED API
@@ -194,7 +195,7 @@ The most significant challenge was the maturity mismatch between SOFR averages a
 
 ## Collaboration
 
-Team members divided work between data pipeline construction (fetching, cleaning, merging) and analysis (EDA, signal construction, statistical testing). Code reviews ensured consistency across modules, and the modular project structure made it straightforward to work on components independently.
+Team members divided work between data pipeline construction (fetching, cleaning, merging) and analysis (EDA, signal construction, statistical testing). Team members worked mostly asynchronously.
 
 ## Next Steps
 
