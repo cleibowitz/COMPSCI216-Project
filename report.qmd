@@ -1,0 +1,213 @@
+---
+title: "Relative Value Analysis of U.S. Treasury Yields and SOFR-Based Rates"
+author:
+  - name: "Chase Leibowitz"
+    affiliations: "Duke University"
+  - name: "Dhruv Trivedi"
+    affiliations: "Duke University"
+  - name: "Jose Maldonado"
+    affiliations: "Duke University"
+  - name: "Felipe Sanchez-Noguera"
+    affiliations: "Duke University"
+date: today
+format:
+  pdf:
+    toc: true
+    number-sections: true
+    colorlinks: true
+    geometry:
+      - margin=1in
+    fontsize: 11pt
+---
+
+# Introduction
+
+The relationship between U.S. Treasury yields and money-market funding rates is central to fixed-income relative value analysis. When short-term funding rates diverge from Treasury yields of comparable maturity, the resulting spreads can signal dislocations in credit markets, shifts in monetary policy expectations, or changes in the supply-demand balance for safe assets.
+
+Traditional relative-value analysis compares Treasury yields to interest rate swap rates (the "swap spread"). However, swap rate data at granular frequencies is not freely available. In this project, we construct an analogous measure using the Secured Overnight Financing Rate (SOFR) and its term averages as proxies for the floating-rate leg of a swap. SOFR averages over 30-, 90-, and 180-day windows approximate the fixed-rate equivalent of receiving SOFR over those horizons, providing a publicly available, daily-frequency alternative to swap rates.
+
+We investigate three research questions:
+
+- **RQ1:** Do SOFR-Treasury spreads exhibit systematic patterns after extreme deviations from recent norms? Specifically, do spreads mean-revert after breaching $\pm2$ standard deviation thresholds, or do they exhibit trend continuation?
+- **RQ2:** How sensitive are these findings to modeling choices, particularly the length of the rolling normalization window used to compute z-scores?
+- **RQ3:** Does spread behavior differ across monetary policy regimes, specifically periods of rising versus falling or stable federal funds rates?
+
+# Data Sources
+
+## FRED API
+
+All data was sourced from the Federal Reserve Economic Data (FRED) API, which provides free access to macroeconomic and financial time series published by the Federal Reserve. We used the following series over the period January 2020 through December 2025:
+
+| Series ID      | Description                        | Role in Analysis              |
+|----------------|------------------------------------|-------------------------------|
+| DGS2           | 2-Year Treasury Constant Maturity  | Short-term yield benchmark    |
+| DGS5           | 5-Year Treasury Constant Maturity  | Medium-term yield benchmark   |
+| DGS10          | 10-Year Treasury Constant Maturity | Long-term yield benchmark     |
+| SOFR           | SOFR Overnight Rate                | Spot funding rate             |
+| SOFR30DAYAVG   | SOFR 30-Day Average                | Short-term SOFR proxy         |
+| SOFR90DAYAVG   | SOFR 90-Day Average                | Medium-term SOFR proxy        |
+| SOFR180DAYAVG  | SOFR 180-Day Average               | Long-term SOFR proxy          |
+| EFFR           | Effective Federal Funds Rate       | Regime classification         |
+
+: FRED series used in this analysis. {#tbl-series}
+
+## Data Cleaning and Construction
+
+The raw data required several processing steps before analysis:
+
+1. **Type coercion.** FRED returns missing observations as the string `"."`. All series were coerced to numeric, converting these to `NaN`.
+2. **Outer join.** Treasury and SOFR series were merged on date using an outer join to preserve all available observations from both sources.
+3. **Forward fill.** Missing values (due to weekends, holidays, or publication lags) were forward-filled with a 5-day limit to avoid propagating stale data across extended gaps.
+4. **Spread construction.** We defined three maturity-aligned spreads:
+   - `spread_2y` = SOFR30DAYAVG $-$ DGS2
+   - `spread_5y` = SOFR90DAYAVG $-$ DGS5
+   - `spread_10y` = SOFR180DAYAVG $-$ DGS10
+5. **Z-score normalization.** For each spread, we computed a rolling z-score using a 60-day window:
+$$z_t = \frac{s_t - \bar{s}_{t,60}}{\sigma_{s,t,60}}$$
+   where $s_t$ is the spread, $\bar{s}_{t,60}$ is the trailing 60-day rolling mean, and $\sigma_{s,t,60}$ is the trailing 60-day rolling standard deviation.
+
+The final dataset contains 1,500+ daily observations across 7 rate series, 3 spreads, and 3 z-scores.
+
+# Modules
+
+## Visualization
+
+We used `matplotlib` and `seaborn` to produce all figures in the project. Visualization served two purposes: (1) exploratory analysis of spread distributions and time-series behavior, and (2) presentation of research question results. Key techniques included time-series line plots with threshold highlighting, histograms for distributional analysis, scatter plots for bivariate relationships, and annotated heatmaps for correlation structure. Visualization was used throughout the project, from initial data exploration through final results.
+
+**Concepts used:** distributional analysis (histograms, summary statistics), time-series visualization, correlation heatmaps, grouped bar charts for comparative analysis.
+
+## Data Wrangling
+
+The core of the pipeline involved merging heterogeneous time series from FRED into a single analysis-ready dataset. This required date alignment across series with different publication schedules, handling of missing values through forward-filling with safeguards, and construction of derived features (spreads, rolling statistics, z-scores). We used `pandas` for all data manipulation, including rolling window calculations, conditional filtering, and reshaping for analysis. Data wrangling was the first stage of the project and underpins all subsequent analysis.
+
+**Concepts used:** time-series joins, forward-fill imputation, rolling window aggregation, feature engineering from raw financial data.
+
+## Statistical Inference
+
+To answer our research questions, we employed one-sample t-tests to determine whether the mean 5-day forward spread change was statistically different from zero, conditional on z-score threshold breaches. This allowed us to assess whether extreme z-score readings carry predictive information about subsequent spread movements. We used `scipy.stats.ttest_1samp` and evaluated results at the 1%, 5%, and 10% significance levels. Statistical inference was applied in the final analysis stage to formalize the patterns observed in exploratory analysis.
+
+**Concepts used:** hypothesis testing (one-sample t-test), conditional expectation, significance levels and p-values, robustness testing across parameter choices.
+
+# Preliminary Results
+
+## Exploratory Data Analysis
+
+### Spread Distributions
+
+@fig-histograms shows the distribution of each spread over the sample period. The 2-year spread is approximately centered at zero (mean = $-0.006$ pp), consistent with short-term SOFR and Treasury rates tracking each other closely. The 5-year and 10-year spreads have progressively more negative means ($-0.043$ and $-0.283$ pp, respectively), reflecting the fact that longer-tenor SOFR averages are backward-looking and tend to lag Treasury yields, which price in forward expectations. All three distributions exhibit wide dispersion (ranges exceeding 4 percentage points), indicating substantial variation in the SOFR-Treasury relationship over this period.
+
+![Distribution of SOFR-Treasury spreads across the three maturity pairs. Red dashed lines indicate sample means.](outputs/figures/spread_histograms.png){#fig-histograms width=100%}
+
+### Spread Time Series
+
+@fig-timeseries reveals that the spreads are far from stationary. All three display large, persistent swings driven by the Federal Reserve's rapid rate-hiking cycle in 2022--2023 and subsequent stabilization. The 2-year spread plunged to approximately $-2.5$ pp in late 2022 as the Fed raised the funds rate faster than short-term SOFR averages could adjust, then recovered through 2023--2024. The 5-year and 10-year spreads show similar patterns with even wider troughs, reaching $-3$ pp. These regime-driven dynamics motivate the rolling z-score approach: a static threshold on spread levels would be meaningless given the non-stationarity, but normalizing against recent history isolates local deviations.
+
+![Time series of SOFR-Treasury spreads (2020--2025). Large swings in 2022--2023 reflect the Fed's rate-hiking cycle.](outputs/figures/spread_time_series.png){#fig-timeseries width=85%}
+
+### Z-Score Signals
+
+@fig-zscores shows the rolling z-scores with $\pm2$ threshold bands. The z-scores successfully remove the trending behavior visible in the raw spreads, oscillating around zero with frequent but transient breaches of the $\pm2$ thresholds. Notably, the 2-year z-score spent an extended period below $-2$ in mid-2022, while the 5-year and 10-year z-scores show more frequent, shorter-duration threshold breaches. The shaded regions highlight the signal events used in our mean-reversion tests.
+
+![Rolling z-scores (60-day window) for each spread. Red shading marks $z > +2$ episodes; green shading marks $z < -2$ episodes.](outputs/figures/z_score_time_series.png){#fig-zscores width=85%}
+
+### Correlation Structure
+
+@fig-corr shows the correlation matrix across all variables. Treasury yields are highly correlated with each other ($\rho > 0.96$) and with SOFR rates ($\rho > 0.87$), confirming that the rate series share a dominant common factor (the level of interest rates). The spreads, by contrast, show moderate mutual correlation ($\rho \approx 0.69$--$0.98$) and low correlation with rate levels ($\rho \approx 0.25$--$0.48$), indicating that the spreads capture information distinct from the overall rate environment.
+
+![Correlation matrix across yields, SOFR rates, and spreads.](outputs/figures/correlation_matrix.png){#fig-corr width=75%}
+
+## RQ1: Do Spreads Mean-Revert After Extreme Z-Scores?
+
+We tested mean reversion by computing the 5-business-day forward change in spread level, conditional on the z-score breaching $\pm2$. Under the mean-reversion hypothesis, we would expect negative forward changes after $z > +2$ (spread narrows back) and positive forward changes after $z < -2$ (spread widens back). @tbl-rq1 presents the results.
+
+| Maturity | Signal  | Mean Forward (pp) | t-stat | p-value | n   |
+|----------|---------|-------------------:|-------:|--------:|----:|
+| 2y       | z < -2  |            -0.0093 |  -1.04 |   0.300 | 123 |
+| 2y       | z > +2  |            +0.0210 |  +1.47 |   0.145 |  91 |
+| 5y       | z < -2  |            -0.0229 |  -2.64 |   0.009 | 152 |
+| 5y       | z > +2  |            +0.0281 |  +1.93 |   0.057 |  96 |
+| 10y      | z < -2  |            -0.0016 |  -0.20 |   0.845 | 168 |
+| 10y      | z > +2  |            +0.0471 |  +3.20 |   0.002 |  88 |
+
+: RQ1: Mean 5-day forward spread change conditional on z-score thresholds. {#tbl-rq1}
+
+**Finding: Spreads do not mean-revert --- they exhibit trend continuation.** The signs are the opposite of what mean reversion would predict. After $z > +2$ (spread is wide relative to recent history), the spread continues to widen over the next 5 days, with the effect strongest for the 10-year maturity (+4.7 bps, $p = 0.002$). After $z < -2$, the spread continues to tighten, though this is only statistically significant for the 5-year maturity ($-2.3$ bps, $p = 0.009$). @fig-rq1 visualizes this pattern.
+
+This result has a clear economic interpretation. The SOFR-Treasury spread is not a pure arbitrage relationship --- it reflects structural differences in how SOFR averages (backward-looking) and Treasury yields (forward-looking) respond to monetary policy changes. When the Fed is actively shifting rates, the spread trends persistently in one direction as SOFR averages gradually catch up to where Treasury yields have already moved. Extreme z-scores therefore signal that a repricing is underway, not that it has gone too far.
+
+![Mean 5-day forward spread change by signal and maturity. Positive bars after $z > +2$ and negative bars after $z < -2$ indicate trend continuation, not mean reversion.](outputs/figures/rq1_mean_reversion.png){#fig-rq1 width=80%}
+
+## RQ2: Sensitivity to Normalization Window
+
+We repeated the RQ1 analysis using rolling windows of 30, 60, and 120 business days. @tbl-rq2 summarizes the results, and @fig-rq2 plots the relationship.
+
+| Maturity | Window | Signal  | Mean Forward (pp) | p-value |   n |
+|----------|-------:|---------|-------------------:|--------:|----:|
+| 2y       |     30 | z < -2  |            -0.0120 |   0.286 | 106 |
+| 2y       |     60 | z < -2  |            -0.0093 |   0.300 | 123 |
+| 2y       |    120 | z < -2  |            -0.0417 |  <0.001 | 147 |
+| 5y       |     30 | z < -2  |            -0.0037 |   0.793 |  98 |
+| 5y       |     60 | z < -2  |            -0.0229 |   0.009 | 152 |
+| 5y       |    120 | z < -2  |            -0.0198 |   0.022 | 154 |
+| 10y      |     30 | z > +2  |            +0.0374 |   0.041 |  79 |
+| 10y      |     60 | z > +2  |            +0.0471 |   0.002 |  88 |
+| 10y      |    120 | z > +2  |            +0.0478 |  <0.001 |  93 |
+
+: RQ2: Selected results across normalization windows (30, 60, 120 days). {#tbl-rq2}
+
+**Finding: The trend-continuation effect is robust and strengthens with longer windows.** The sign of the forward spread change is consistent across all three window lengths --- no sign flips occur. Longer windows (120 days) produce uniformly higher statistical significance, with every maturity-signal pair reaching at least $p < 0.05$. This makes sense: a 120-day window is slower to incorporate recent trend information into the rolling mean, so a $z > +2$ reading more reliably indicates a genuine trend rather than short-term noise. The 30-day window, by contrast, adapts quickly and produces weaker signals because it normalizes away much of the trend.
+
+![Mean forward spread change as a function of normalization window length. Longer windows produce larger and more significant effects, with consistent sign across all maturities.](outputs/figures/rq2_window_sensitivity.png){#fig-rq2 width=100%}
+
+## RQ3: Regime Dependence
+
+We classified each observation into a "rising rate" regime (EFFR increased over the trailing 60 days) or a "falling/stable" regime, then repeated the mean-reversion test within each regime. @tbl-rq3 presents selected results.
+
+| Maturity | Regime          | Signal  | Mean Forward (pp) | p-value |  n |
+|----------|-----------------|---------|-------------------:|--------:|---:|
+| 5y       | rising          | z > +2  |            +0.0621 |   0.004 | 52 |
+| 10y      | rising          | z > +2  |            +0.0904 |  <0.001 | 53 |
+| 5y       | falling/stable  | z > +2  |            -0.0085 |   0.649 | 44 |
+| 10y      | falling/stable  | z > +2  |            -0.0080 |   0.732 | 35 |
+| 10y      | falling/stable  | z < -2  |            +0.0603 |   0.109 | 116|
+| 2y       | rising          | z < -2  |            -0.0315 |   0.649 | 24 |
+
+: RQ3: Mean reversion test results by monetary policy regime. {#tbl-rq3}
+
+**Finding: Trend continuation is concentrated in the rising-rate regime; it disappears or weakly reverses in falling/stable periods.** During rising-rate environments, the $z > +2$ signal for the 5-year and 10-year maturities produces large, statistically significant trend continuation (+6.2 and +9.0 bps per 5-day period, respectively). This aligns with the economic mechanism described in RQ1: when the Fed is actively hiking, SOFR averages lag behind Treasury yields, creating persistent spread widening that an extreme z-score correctly identifies as ongoing.
+
+In falling or stable rate regimes, the effect vanishes. The $z > +2$ forward changes for 5-year and 10-year spreads are slightly negative and statistically insignificant, suggesting that when the Fed is not actively shifting rates, extreme z-scores are indeed more noise than signal. This finding has practical implications: any spread-based trading signal would need to be conditioned on the monetary policy regime to be useful.
+
+{{< pagebreak >}}
+
+![Mean forward spread change by regime. Trend continuation (orange bars, $z > +2$) is strong during rising-rate periods and absent during falling/stable periods.](outputs/figures/rq3_regime_analysis.png){#fig-rq3 width=100%}
+
+# Reflection
+
+## Successes
+
+The pipeline successfully automates the full workflow from raw API pulls to statistical results and publication-ready figures. Using FRED for all data (including SOFR averages as swap-rate proxies) eliminated the need for expensive data subscriptions while still producing economically meaningful results. The z-score normalization framework effectively handles the non-stationarity in spreads, and the regime-conditioning analysis revealed a nuanced finding that would not have emerged from unconditional tests alone.
+
+## Challenges
+
+The most significant challenge was the maturity mismatch between SOFR averages and Treasury yields. A 30-day SOFR average is not truly comparable to a 2-year Treasury yield --- it is a backward-looking average of an overnight rate, while the Treasury yield reflects 2 years of forward rate expectations. This mismatch likely explains why our "spreads" behave more like a measure of SOFR lag than a true relative-value signal. A second challenge was the small sample size for regime-conditioned tests; splitting the data by regime and signal threshold reduced some cells to fewer than 30 observations.
+
+## Collaboration
+
+Team members divided work between data pipeline construction (fetching, cleaning, merging) and analysis (EDA, signal construction, statistical testing). Code reviews ensured consistency across modules, and the modular project structure made it straightforward to work on components independently.
+
+## Next Steps
+
+1. **Better maturity matching.** Replace SOFR averages with SOFR swap rates or overnight index swap (OIS) rates, which are actual term rates and would produce true swap spreads.
+2. **Longer horizons.** Test 10-day, 20-day, and 60-day forward windows to determine whether mean reversion emerges at longer horizons even though 5-day behavior shows trend continuation.
+3. **Volatility conditioning.** Test whether signal quality differs in high- versus low-volatility environments (e.g., using VIX or realized spread volatility).
+4. **Formal backtesting.** Construct a simulated trading strategy based on the z-score signals and evaluate risk-adjusted returns, accounting for transaction costs.
+
+# AI Disclosure
+Artificial Intelligence Tools: ChatGPT 5.2 via ChatGPT.com
+Artificial Intelligence Tools: Claude Opus 4.6 via Claude Code
+Methodology: ChatGPT was used for determining EDA methodology given the dataset
+Methodology: ChatGPT was used to help find alternatives for Bloomberg data that was not accessible for the prototype
+Methodology: Claude Code was used for code syntax execution
+Writing -- Review and Editing: Claude Code (within Quarto) was used for assistance in writing editing
+

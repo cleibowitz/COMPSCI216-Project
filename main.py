@@ -16,6 +16,7 @@ from src.data.process_sofr import process_sofr_rates
 from src.data.build_dataset import build_dataset
 from src.analysis.eda import run_eda
 from src.analysis.signals import run_signals
+from src.analysis.rq_analysis import run_rq_analysis
 
 
 def main():
@@ -56,16 +57,22 @@ def main():
     print("=" * 60)
     final_df = run_signals(final_df)
 
+    # ------ Research Questions ------
+    print("\n" + "=" * 60)
+    print("Step 7: Research Question Analysis")
+    print("=" * 60)
+    run_rq_analysis(final_df)
+
     # ------ Final Summary ------
     print("\n" + "=" * 60)
     print("Pipeline complete.")
     print("=" * 60)
     print(f"  Dataset shape: {final_df.shape}")
-    print(f"  Columns: {list(final_df.columns)}")
     print(f"\n  Outputs:")
     print(f"    data/processed/final_dataset.parquet")
     print(f"    data/processed/final_dataset_with_signals.parquet")
     print(f"    outputs/figures/*.png")
+    print(f"    outputs/tables/*.csv")
 
 
 if __name__ == "__main__":

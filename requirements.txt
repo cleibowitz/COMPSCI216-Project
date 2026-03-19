@@ -5,3 +5,4 @@ pyarrow>=10.0,<15.0
 python-dotenv>=1.0
 matplotlib>=3.7
 seaborn>=0.12
+scipy>=1.10
