@@ -1,8 +1,10 @@
 """
-Fetch U.S. Treasury yield data from the FRED API.
+Fetch U.S. Treasury yield and EFFR data from the FRED API.
 
-Pulls DGS2, DGS5, DGS10 (daily) and returns a single DataFrame
-indexed by date with one column per series.
+Pulls DGS2, DGS5, DGS10, and EFFR (daily) and returns a single DataFrame
+indexed by date with one column per series. EFFR is included here because
+it is needed for regime classification (RQ3) and is no longer fetched
+alongside SOFR averages.
 """
 
 import pandas as pd
@@ -13,12 +15,12 @@ from src.utils.config import FRED_API_KEY, TREASURY_SERIES, START_DATE, END_DATE
 
 def fetch_treasury_yields() -> pd.DataFrame:
     """
-    Download Treasury yield series from FRED and return a combined DataFrame.
+    Download Treasury yield and EFFR series from FRED.
 
     Returns
     -------
     pd.DataFrame
-        Columns: DGS2, DGS5, DGS10  (percent, e.g. 4.25 = 4.25%)
+        Columns: DGS2, DGS5, DGS10, EFFR  (percent, e.g. 4.25 = 4.25%)
         Index: DatetimeIndex (daily, business days only)
     """
     if not FRED_API_KEY:

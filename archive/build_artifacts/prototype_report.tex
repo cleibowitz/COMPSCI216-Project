@@ -1,0 +1,753 @@
+% Options for packages loaded elsewhere
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+\PassOptionsToPackage{dvipsnames,svgnames,x11names}{xcolor}
+%
+\documentclass[
+  11pt,
+  letterpaper,
+  DIV=11,
+  numbers=noendperiod]{scrartcl}
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\setcounter{secnumdepth}{5}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+% Make \paragraph and \subparagraph free-standing
+\makeatletter
+\ifx\paragraph\undefined\else
+  \let\oldparagraph\paragraph
+  \renewcommand{\paragraph}{
+    \@ifstar
+      \xxxParagraphStar
+      \xxxParagraphNoStar
+  }
+  \newcommand{\xxxParagraphStar}[1]{\oldparagraph*{#1}\mbox{}}
+  \newcommand{\xxxParagraphNoStar}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+  \let\oldsubparagraph\subparagraph
+  \renewcommand{\subparagraph}{
+    \@ifstar
+      \xxxSubParagraphStar
+      \xxxSubParagraphNoStar
+  }
+  \newcommand{\xxxSubParagraphStar}[1]{\oldsubparagraph*{#1}\mbox{}}
+  \newcommand{\xxxSubParagraphNoStar}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+\makeatother
+
+
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\newsavebox\pandoc@box
+\newcommand*\pandocbounded[1]{% scales image to fit in text height/width
+  \sbox\pandoc@box{#1}%
+  \Gscale@div\@tempa{\textheight}{\dimexpr\ht\pandoc@box+\dp\pandoc@box\relax}%
+  \Gscale@div\@tempb{\linewidth}{\wd\pandoc@box}%
+  \ifdim\@tempb\p@<\@tempa\p@\let\@tempa\@tempb\fi% select the smaller of both
+  \ifdim\@tempa\p@<\p@\scalebox{\@tempa}{\usebox\pandoc@box}%
+  \else\usebox{\pandoc@box}%
+  \fi%
+}
+% Set default figure placement to htbp
+\def\fps@figure{htbp}
+\makeatother
+
+
+
+
+
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+
+
+
+ 
+
+
+\KOMAoption{captions}{tableheading}
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\AtBeginDocument{%
+\ifdefined\contentsname
+  \renewcommand*\contentsname{Table of contents}
+\else
+  \newcommand\contentsname{Table of contents}
+\fi
+\ifdefined\listfigurename
+  \renewcommand*\listfigurename{List of Figures}
+\else
+  \newcommand\listfigurename{List of Figures}
+\fi
+\ifdefined\listtablename
+  \renewcommand*\listtablename{List of Tables}
+\else
+  \newcommand\listtablename{List of Tables}
+\fi
+\ifdefined\figurename
+  \renewcommand*\figurename{Figure}
+\else
+  \newcommand\figurename{Figure}
+\fi
+\ifdefined\tablename
+  \renewcommand*\tablename{Table}
+\else
+  \newcommand\tablename{Table}
+\fi
+}
+\@ifpackageloaded{float}{}{\usepackage{float}}
+\floatstyle{ruled}
+\@ifundefined{c@chapter}{\newfloat{codelisting}{h}{lop}}{\newfloat{codelisting}{h}{lop}[chapter]}
+\floatname{codelisting}{Listing}
+\newcommand*\listoflistings{\listof{codelisting}{List of Listings}}
+\makeatother
+\makeatletter
+\makeatother
+\makeatletter
+\@ifpackageloaded{caption}{}{\usepackage{caption}}
+\@ifpackageloaded{subcaption}{}{\usepackage{subcaption}}
+\makeatother
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Relative Value Analysis of U.S. Treasury Yields and SOFR-Based Rates},
+  pdfauthor={Chase Leibowitz; Dhruv Trivedi; Jose Maldonado; Felipe Sanchez-Noguera},
+  colorlinks=true,
+  linkcolor={blue},
+  filecolor={Maroon},
+  citecolor={Blue},
+  urlcolor={Blue},
+  pdfcreator={LaTeX via pandoc}}
+
+
+\title{Relative Value Analysis of U.S. Treasury Yields and SOFR-Based
+Rates}
+\author{Chase Leibowitz \and Dhruv Trivedi \and Jose
+Maldonado \and Felipe Sanchez-Noguera}
+\date{2026-03-19}
+\begin{document}
+\maketitle
+
+\renewcommand*\contentsname{Table of contents}
+{
+\hypersetup{linkcolor=}
+\setcounter{tocdepth}{3}
+\tableofcontents
+}
+
+\section{Introduction}\label{introduction}
+
+The relationship between U.S. Treasury yields and money-market funding
+rates is central to fixed-income relative value analysis. When
+short-term funding rates diverge from Treasury yields of comparable
+maturity, the resulting spreads can signal dislocations in credit
+markets, shifts in monetary policy expectations, or changes in the
+supply-demand balance for safe assets.
+
+Traditional relative-value analysis compares Treasury yields to interest
+rate swap rates (the ``swap spread''). However, swap rate data at
+granular frequencies is not freely available. In this project, we
+construct an analogous measure using the Secured Overnight Financing
+Rate (SOFR) and its term averages as proxies for the floating-rate leg
+of a swap. SOFR averages over 30-, 90-, and 180-day windows approximate
+the fixed-rate equivalent of receiving SOFR over those horizons,
+providing a publicly available, daily-frequency alternative to swap
+rates.
+
+We investigate three research questions:
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{RQ1:} Do SOFR-Treasury spreads exhibit systematic patterns
+  after extreme deviations from recent norms? Specifically, do spreads
+  mean-revert after breaching \(\pm2\) standard deviation thresholds, or
+  do they exhibit trend continuation?
+\item
+  \textbf{RQ2:} How sensitive are these findings to modeling choices,
+  particularly the length of the rolling normalization window used to
+  compute z-scores?
+\item
+  \textbf{RQ3:} Does spread behavior differ across monetary policy
+  regimes, specifically periods of rising versus falling or stable
+  federal funds rates?
+\end{itemize}
+
+Note: These research questions have changed slightly from the original
+project proposal due to complications in accessing Bloomberg Terminal
+data. We hope to access this data for the final project submission and
+incorporate our original research questions, but this pivot was required
+at the moment due to the lack of granular data. \# Data Sources
+
+\subsection{FRED API}\label{fred-api}
+
+All data was sourced from the Federal Reserve Economic Data (FRED) API,
+which provides free access to macroeconomic and financial time series
+published by the Federal Reserve. We used the following series over the
+period January 2020 through December 2025:
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.1928}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.4337}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 4\tabcolsep) * \real{0.3735}}@{}}
+\caption{FRED series used in this
+analysis.}\label{tbl-series}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Series ID
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Description
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Role in Analysis
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Series ID
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Description
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Role in Analysis
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+DGS2 & 2-Year Treasury Constant Maturity & Short-term yield benchmark \\
+DGS5 & 5-Year Treasury Constant Maturity & Medium-term yield
+benchmark \\
+DGS10 & 10-Year Treasury Constant Maturity & Long-term yield
+benchmark \\
+SOFR & SOFR Overnight Rate & Spot funding rate \\
+SOFR30DAYAVG & SOFR 30-Day Average & Short-term SOFR proxy \\
+SOFR90DAYAVG & SOFR 90-Day Average & Medium-term SOFR proxy \\
+SOFR180DAYAVG & SOFR 180-Day Average & Long-term SOFR proxy \\
+EFFR & Effective Federal Funds Rate & Regime classification \\
+\end{longtable}
+
+\subsection{Data Cleaning and
+Construction}\label{data-cleaning-and-construction}
+
+The raw data required several processing steps before analysis:
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Type coercion.} FRED returns missing observations as the
+  string \texttt{"."}. All series were coerced to numeric, converting
+  these to \texttt{NaN}.
+\item
+  \textbf{Outer join.} Treasury and SOFR series were merged on date
+  using an outer join to preserve all available observations from both
+  sources.
+\item
+  \textbf{Forward fill.} Missing values (due to weekends, holidays, or
+  publication lags) were forward-filled with a 5-day limit to avoid
+  propagating stale data across extended gaps.
+\item
+  \textbf{Spread construction.} We defined three maturity-aligned
+  spreads:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \texttt{spread\_2y} = SOFR30DAYAVG \(-\) DGS2
+  \item
+    \texttt{spread\_5y} = SOFR90DAYAVG \(-\) DGS5
+  \item
+    \texttt{spread\_10y} = SOFR180DAYAVG \(-\) DGS10
+  \end{itemize}
+\item
+  \textbf{Z-score normalization.} For each spread, we computed a rolling
+  z-score using a 60-day window:
+  \[z_t = \frac{s_t - \bar{s}_{t,60}}{\sigma_{s,t,60}}\] where \(s_t\)
+  is the spread, \(\bar{s}_{t,60}\) is the trailing 60-day rolling mean,
+  and \(\sigma_{s,t,60}\) is the trailing 60-day rolling standard
+  deviation.
+\end{enumerate}
+
+The final dataset contains 1,500+ daily observations across 7 rate
+series, 3 spreads, and 3 z-scores.
+
+\section{Modules}\label{modules}
+
+\subsection{Visualization}\label{visualization}
+
+We used \texttt{matplotlib} and \texttt{seaborn} to produce all figures
+in the project. Visualization served two purposes: (1) exploratory
+analysis of spread distributions and time-series behavior, and (2)
+presentation of research question results. Key techniques included
+time-series line plots with threshold highlighting, histograms for
+distributional analysis, scatter plots for bivariate relationships, and
+annotated heatmaps for correlation structure. Visualization was used
+throughout the project, from initial data exploration through final
+results.
+
+\textbf{Concepts used:} distributional analysis (histograms, summary
+statistics), time-series visualization, correlation heatmaps, grouped
+bar charts for comparative analysis.
+
+\subsection{Data Wrangling}\label{data-wrangling}
+
+The core of the pipeline involved merging heterogeneous time series from
+FRED into a single analysis-ready dataset. This required date alignment
+across series with different publication schedules, handling of missing
+values through forward-filling with safeguards, and construction of
+derived features (spreads, rolling statistics, z-scores). We used
+\texttt{pandas} for all data manipulation, including rolling window
+calculations, conditional filtering, and reshaping for analysis. Data
+wrangling was the first stage of the project and underpins all
+subsequent analysis.
+
+\textbf{Concepts used:} time-series joins, forward-fill imputation,
+rolling window aggregation, feature engineering from raw financial data.
+
+\subsection{Statistical Inference}\label{statistical-inference}
+
+To answer our research questions, we employed one-sample t-tests to
+determine whether the mean 5-day forward spread change was statistically
+different from zero, conditional on z-score threshold breaches. This
+allowed us to assess whether extreme z-score readings carry predictive
+information about subsequent spread movements. We used
+\texttt{scipy.stats.ttest\_1samp} and evaluated results at the 1\%, 5\%,
+and 10\% significance levels. Statistical inference was applied in the
+final analysis stage to formalize the patterns observed in exploratory
+analysis.
+
+\textbf{Concepts used:} hypothesis testing (one-sample t-test),
+conditional expectation, significance levels and p-values, robustness
+testing across parameter choices.
+
+\section{Preliminary Results}\label{preliminary-results}
+
+\subsection{Exploratory Data Analysis}\label{exploratory-data-analysis}
+
+\subsubsection{Spread Distributions}\label{spread-distributions}
+
+Figure~\ref{fig-histograms} shows the distribution of each spread over
+the sample period. The 2-year spread is approximately centered at zero
+(mean = \(-0.006\) pp), consistent with short-term SOFR and Treasury
+rates tracking each other closely. The 5-year and 10-year spreads have
+progressively more negative means (\(-0.043\) and \(-0.283\) pp,
+respectively), reflecting the fact that longer-tenor SOFR averages are
+backward-looking and tend to lag Treasury yields, which price in forward
+expectations. All three distributions exhibit wide dispersion (ranges
+exceeding 4 percentage points), indicating substantial variation in the
+SOFR-Treasury relationship over this period.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{outputs/figures/spread_histograms.png}
+
+}
+
+\caption{\label{fig-histograms}Distribution of SOFR-Treasury spreads
+across the three maturity pairs. Red dashed lines indicate sample
+means.}
+
+\end{figure}%
+
+\subsubsection{Spread Time Series}\label{spread-time-series}
+
+Figure~\ref{fig-timeseries} reveals that the spreads are far from
+stationary. All three display large, persistent swings driven by the
+Federal Reserve's rapid rate-hiking cycle in 2022--2023 and subsequent
+stabilization. The 2-year spread plunged to approximately \(-2.5\) pp in
+late 2022 as the Fed raised the funds rate faster than short-term SOFR
+averages could adjust, then recovered through 2023--2024. The 5-year and
+10-year spreads show similar patterns with even wider troughs, reaching
+\(-3\) pp.~These regime-driven dynamics motivate the rolling z-score
+approach: a static threshold on spread levels would be meaningless given
+the non-stationarity, but normalizing against recent history isolates
+local deviations.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{outputs/figures/spread_time_series.png}
+
+}
+
+\caption{\label{fig-timeseries}Time series of SOFR-Treasury spreads
+(2020--2025). Large swings in 2022--2023 reflect the Fed's rate-hiking
+cycle.}
+
+\end{figure}%
+
+\subsubsection{Z-Score Signals}\label{z-score-signals}
+
+Figure~\ref{fig-zscores} shows the rolling z-scores with \(\pm2\)
+threshold bands. The z-scores successfully remove the trending behavior
+visible in the raw spreads, oscillating around zero with frequent but
+transient breaches of the \(\pm2\) thresholds. Notably, the 2-year
+z-score spent an extended period below \(-2\) in mid-2022, while the
+5-year and 10-year z-scores show more frequent, shorter-duration
+threshold breaches. The shaded regions highlight the signal events used
+in our mean-reversion tests.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.85\linewidth,height=\textheight,keepaspectratio]{outputs/figures/z_score_time_series.png}
+
+}
+
+\caption{\label{fig-zscores}Rolling z-scores (60-day window) for each
+spread. Red shading marks \(z > +2\) episodes; green shading marks
+\(z < -2\) episodes.}
+
+\end{figure}%
+
+\subsubsection{Correlation Structure}\label{correlation-structure}
+
+Figure~\ref{fig-corr} shows the correlation matrix across all variables.
+Treasury yields are highly correlated with each other (\(\rho > 0.96\))
+and with SOFR rates (\(\rho > 0.87\)), confirming that the rate series
+share a dominant common factor (the level of interest rates). The
+spreads, by contrast, show moderate mutual correlation
+(\(\rho \approx 0.69\)--\(0.98\)) and low correlation with rate levels
+(\(\rho \approx 0.25\)--\(0.48\)), indicating that the spreads capture
+information distinct from the overall rate environment.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.75\linewidth,height=\textheight,keepaspectratio]{outputs/figures/correlation_matrix.png}
+
+}
+
+\caption{\label{fig-corr}Correlation matrix across yields, SOFR rates,
+and spreads.}
+
+\end{figure}%
+
+\subsection{RQ1: Do Spreads Mean-Revert After Extreme
+Z-Scores?}\label{rq1-do-spreads-mean-revert-after-extreme-z-scores}
+
+We tested mean reversion by computing the 5-business-day forward change
+in spread level, conditional on the z-score breaching \(\pm2\). Under
+the mean-reversion hypothesis, we would expect negative forward changes
+after \(z > +2\) (spread narrows back) and positive forward changes
+after \(z < -2\) (spread widens back). Table~\ref{tbl-rq1} presents the
+results.
+
+\begin{longtable}[]{@{}llrrrr@{}}
+\caption{RQ1: Mean 5-day forward spread change conditional on z-score
+thresholds.}\label{tbl-rq1}\tabularnewline
+\toprule\noalign{}
+Maturity & Signal & Mean Forward (pp) & t-stat & p-value & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Maturity & Signal & Mean Forward (pp) & t-stat & p-value & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2y & z \textless{} -2 & -0.0093 & -1.04 & 0.300 & 123 \\
+2y & z \textgreater{} +2 & +0.0210 & +1.47 & 0.145 & 91 \\
+5y & z \textless{} -2 & -0.0229 & -2.64 & 0.009 & 152 \\
+5y & z \textgreater{} +2 & +0.0281 & +1.93 & 0.057 & 96 \\
+10y & z \textless{} -2 & -0.0016 & -0.20 & 0.845 & 168 \\
+10y & z \textgreater{} +2 & +0.0471 & +3.20 & 0.002 & 88 \\
+\end{longtable}
+
+\textbf{Finding: Spreads do not mean-revert --- they exhibit trend
+continuation.} The signs are the opposite of what mean reversion would
+predict. After \(z > +2\) (spread is wide relative to recent history),
+the spread continues to widen over the next 5 days, with the effect
+strongest for the 10-year maturity (+4.7 bps, \(p = 0.002\)). After
+\(z < -2\), the spread continues to tighten, though this is only
+statistically significant for the 5-year maturity (\(-2.3\) bps,
+\(p = 0.009\)). Figure~\ref{fig-rq1} visualizes this pattern.
+
+This result has a clear economic interpretation. The SOFR-Treasury
+spread is not a pure arbitrage relationship --- it reflects structural
+differences in how SOFR averages (backward-looking) and Treasury yields
+(forward-looking) respond to monetary policy changes. When the Fed is
+actively shifting rates, the spread trends persistently in one direction
+as SOFR averages gradually catch up to where Treasury yields have
+already moved. Extreme z-scores therefore signal that a repricing is
+underway, not that it has gone too far.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=0.8\linewidth,height=\textheight,keepaspectratio]{outputs/figures/rq1_mean_reversion.png}
+
+}
+
+\caption{\label{fig-rq1}Mean 5-day forward spread change by signal and
+maturity. Positive bars after \(z > +2\) and negative bars after
+\(z < -2\) indicate trend continuation, not mean reversion.}
+
+\end{figure}%
+
+\subsection{RQ2: Sensitivity to Normalization
+Window}\label{rq2-sensitivity-to-normalization-window}
+
+We repeated the RQ1 analysis using rolling windows of 30, 60, and 120
+business days. Table~\ref{tbl-rq2} summarizes the results, and
+Figure~\ref{fig-rq2} plots the relationship.
+
+\begin{longtable}[]{@{}lrlrrr@{}}
+\caption{RQ2: Selected results across normalization windows (30, 60, 120
+days).}\label{tbl-rq2}\tabularnewline
+\toprule\noalign{}
+Maturity & Window & Signal & Mean Forward (pp) & p-value & n \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+Maturity & Window & Signal & Mean Forward (pp) & p-value & n \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+2y & 30 & z \textless{} -2 & -0.0120 & 0.286 & 106 \\
+2y & 60 & z \textless{} -2 & -0.0093 & 0.300 & 123 \\
+2y & 120 & z \textless{} -2 & -0.0417 & \textless0.001 & 147 \\
+5y & 30 & z \textless{} -2 & -0.0037 & 0.793 & 98 \\
+5y & 60 & z \textless{} -2 & -0.0229 & 0.009 & 152 \\
+5y & 120 & z \textless{} -2 & -0.0198 & 0.022 & 154 \\
+10y & 30 & z \textgreater{} +2 & +0.0374 & 0.041 & 79 \\
+10y & 60 & z \textgreater{} +2 & +0.0471 & 0.002 & 88 \\
+10y & 120 & z \textgreater{} +2 & +0.0478 & \textless0.001 & 93 \\
+\end{longtable}
+
+\textbf{Finding: The trend-continuation effect is robust and strengthens
+with longer windows.} The sign of the forward spread change is
+consistent across all three window lengths --- no sign flips occur.
+Longer windows (120 days) produce uniformly higher statistical
+significance, with every maturity-signal pair reaching at least
+\(p < 0.05\). This makes sense: a 120-day window is slower to
+incorporate recent trend information into the rolling mean, so a
+\(z > +2\) reading more reliably indicates a genuine trend rather than
+short-term noise. The 30-day window, by contrast, adapts quickly and
+produces weaker signals because it normalizes away much of the trend.
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{outputs/figures/rq2_window_sensitivity.png}
+
+}
+
+\caption{\label{fig-rq2}Mean forward spread change as a function of
+normalization window length. Longer windows produce larger and more
+significant effects, with consistent sign across all maturities.}
+
+\end{figure}%
+
+\subsection{RQ3: Regime Dependence}\label{rq3-regime-dependence}
+
+We classified each observation into a ``rising rate'' regime (EFFR
+increased over the trailing 60 days) or a ``falling/stable'' regime,
+then repeated the mean-reversion test within each regime.
+Table~\ref{tbl-rq3} presents selected results.
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1449}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2464}}
+  >{\raggedright\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1304}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.2899}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.1304}}
+  >{\raggedleft\arraybackslash}p{(\linewidth - 10\tabcolsep) * \real{0.0580}}@{}}
+\caption{RQ3: Mean reversion test results by monetary policy
+regime.}\label{tbl-rq3}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Maturity
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Regime
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Signal
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Mean Forward (pp)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p-value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Maturity
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Regime
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedright
+Signal
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Mean Forward (pp)
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+p-value
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+n
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+5y & rising & z \textgreater{} +2 & +0.0621 & 0.004 & 52 \\
+10y & rising & z \textgreater{} +2 & +0.0904 & \textless0.001 & 53 \\
+5y & falling/stable & z \textgreater{} +2 & -0.0085 & 0.649 & 44 \\
+10y & falling/stable & z \textgreater{} +2 & -0.0080 & 0.732 & 35 \\
+10y & falling/stable & z \textless{} -2 & +0.0603 & 0.109 & 116 \\
+2y & rising & z \textless{} -2 & -0.0315 & 0.649 & 24 \\
+\end{longtable}
+
+\textbf{Finding: Trend continuation is concentrated in the rising-rate
+regime; it disappears or weakly reverses in falling/stable periods.}
+During rising-rate environments, the \(z > +2\) signal for the 5-year
+and 10-year maturities produces large, statistically significant trend
+continuation (+6.2 and +9.0 bps per 5-day period, respectively). This
+aligns with the economic mechanism described in RQ1: when the Fed is
+actively hiking, SOFR averages lag behind Treasury yields, creating
+persistent spread widening that an extreme z-score correctly identifies
+as ongoing.
+
+In falling or stable rate regimes, the effect vanishes. The \(z > +2\)
+forward changes for 5-year and 10-year spreads are slightly negative and
+statistically insignificant, suggesting that when the Fed is not
+actively shifting rates, extreme z-scores are indeed more noise than
+signal. This finding has practical implications: any spread-based
+trading signal would need to be conditioned on the monetary policy
+regime to be useful.
+
+\newpage{}
+
+\begin{figure}
+
+\centering{
+
+\includegraphics[width=1\linewidth,height=\textheight,keepaspectratio]{outputs/figures/rq3_regime_analysis.png}
+
+}
+
+\caption{\label{fig-rq3}Mean forward spread change by regime. Trend
+continuation (orange bars, \(z > +2\)) is strong during rising-rate
+periods and absent during falling/stable periods.}
+
+\end{figure}%
+
+\section{Reflection}\label{reflection}
+
+\subsection{Successes}\label{successes}
+
+The pipeline successfully automates the full workflow from raw API pulls
+to statistical results and publication-ready figures. Using FRED for all
+data (including SOFR averages as swap-rate proxies) eliminated the need
+for expensive data subscriptions while still producing economically
+meaningful results. The z-score normalization framework effectively
+handles the non-stationarity in spreads, and the regime-conditioning
+analysis revealed a nuanced finding that would not have emerged from
+unconditional tests alone.
+
+\subsection{Challenges}\label{challenges}
+
+The most significant challenge was the maturity mismatch between SOFR
+averages and Treasury yields. A 30-day SOFR average is not truly
+comparable to a 2-year Treasury yield --- it is a backward-looking
+average of an overnight rate, while the Treasury yield reflects 2 years
+of forward rate expectations. This mismatch likely explains why our
+``spreads'' behave more like a measure of SOFR lag than a true
+relative-value signal. A second challenge was the small sample size for
+regime-conditioned tests; splitting the data by regime and signal
+threshold reduced some cells to fewer than 30 observations.
+
+\subsection{Collaboration}\label{collaboration}
+
+Team members divided work between data pipeline construction (fetching,
+cleaning, merging) and analysis (EDA, signal construction, statistical
+testing). Team members worked mostly asynchronously.
+
+\subsection{Next Steps}\label{next-steps}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Better maturity matching.} Replace SOFR averages with SOFR
+  swap rates or overnight index swap (OIS) rates, which are actual term
+  rates and would produce true swap spreads.
+\item
+  \textbf{Longer horizons.} Test 10-day, 20-day, and 60-day forward
+  windows to determine whether mean reversion emerges at longer horizons
+  even though 5-day behavior shows trend continuation.
+\item
+  \textbf{Volatility conditioning.} Test whether signal quality differs
+  in high- versus low-volatility environments (e.g., using VIX or
+  realized spread volatility).
+\item
+  \textbf{Formal backtesting.} Construct a simulated trading strategy
+  based on the z-score signals and evaluate risk-adjusted returns,
+  accounting for transaction costs.
+\end{enumerate}
+
+\section{AI Disclosure}\label{ai-disclosure}
+
+Artificial Intelligence Tools: ChatGPT 5.2 via ChatGPT.com Artificial
+Intelligence Tools: Claude Opus 4.6 via Claude Code Methodology: ChatGPT
+was used for determining EDA methodology given the dataset Methodology:
+ChatGPT was used to help find alternatives for Bloomberg data that was
+not accessible for the prototype Methodology: Claude Code was used for
+code syntax execution Writing -- Review and Editing: Claude Code (within
+Quarto) was used for assistance in writing editing
+
+
+
+
+\end{document}

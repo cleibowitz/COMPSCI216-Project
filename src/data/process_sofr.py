@@ -1,40 +1,74 @@
 """
-Clean and prepare SOFR rate data for merging with Treasury yields.
+Validate and clean SOFR OIS par-rate data loaded from LSEG CSVs.
 
-No futures conversion needed — FRED provides SOFR rates directly.
-We just clean missing values and ensure a consistent daily time series.
+The raw OIS DataFrame (ois_2y, ois_5y, ois_10y) has already had
+its mid-rate computed and scale verified in fetch_sofr_futures.py.
+This module performs final sanity checks and reports data quality.
 """
 
 import pandas as pd
 
 
-def process_sofr_rates(raw_df: pd.DataFrame) -> pd.DataFrame:
+def process_ois_rates(raw_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Clean raw SOFR rate data from FRED.
+    Clean and validate LSEG OIS rate data.
+
+    Checks performed:
+      1. All values should be in percentage-point scale (0 < rate < 15).
+      2. Rows where every OIS column is NaN are dropped.
+      3. Summary of remaining NaNs is printed for transparency.
 
     Parameters
     ----------
     raw_df : pd.DataFrame
-        Raw SOFR rates with columns: SOFR, SOFR30DAYAVG, SOFR90DAYAVG, SOFR180DAYAVG
+        Columns: ois_2y, ois_5y, ois_10y  (percentage points)
 
     Returns
     -------
     pd.DataFrame
-        Cleaned SOFR rates, NaN-only rows removed.
+        Cleaned OIS rates; rows with all-NaN OIS values removed.
     """
-    # Drop rows where all rates are NaN
-    cleaned = raw_df.dropna(how="all")
+    ois_cols = ["ois_2y", "ois_5y", "ois_10y"]
 
-    print(f"  Cleaned SOFR rates: {cleaned.shape[0]} rows "
-          f"(dropped {raw_df.shape[0] - cleaned.shape[0]} all-NaN rows)")
+    # Confirm scale for each column
+    for col in ois_cols:
+        if col not in raw_df.columns:
+            continue
+        col_data = raw_df[col].dropna()
+        if col_data.empty:
+            print(f"  WARNING [{col}]: no non-NaN observations.")
+            continue
+        if col_data.max() > 15:
+            print(f"  WARNING [{col}]: max = {col_data.max():.3f} — "
+                  f"unusually high; verify units are percentage points.")
+        elif col_data.max() < 1.0:
+            print(f"  WARNING [{col}]: max = {col_data.max():.4f} — "
+                  f"values may be in decimal form rather than percentage points.")
+        else:
+            print(f"  [{col}] scale OK — range [{col_data.min():.3f}, {col_data.max():.3f}] pp")
+
+    # Drop rows where all OIS columns are NaN
+    before = len(raw_df)
+    cleaned = raw_df.dropna(subset=ois_cols, how="all")
+    dropped = before - len(cleaned)
+    print(f"  Dropped {dropped} all-NaN rows; {len(cleaned)} rows remain.")
+
+    # Report per-column NaN counts
+    nan_counts = cleaned[ois_cols].isna().sum()
+    if nan_counts.any():
+        print(f"  Remaining NaNs per column:\n{nan_counts.to_string()}")
 
     return cleaned
 
 
-if __name__ == "__main__":
-    from src.utils.config import RAW_DATA_DIR
+# Keep old name as an alias so any existing callsites don't break
+process_sofr_rates = process_ois_rates
 
-    raw = pd.read_csv(RAW_DATA_DIR / "sofr_rates_raw.csv", index_col="date", parse_dates=True)
-    df = process_sofr_rates(raw)
-    print(df.head(10))
+
+if __name__ == "__main__":
+    from src.data.fetch_sofr_futures import load_ois_rates
+
+    raw = load_ois_rates()
+    df = process_ois_rates(raw)
+    print(df.tail(5))
     print(f"\nShape: {df.shape}")

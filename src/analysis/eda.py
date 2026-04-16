@@ -15,9 +15,9 @@ from src.utils.config import FINAL_DATASET_PATH
 
 # Spread definitions: column name -> human-readable label
 SPREAD_COLS = {
-    "spread_2y": "Spread 2Y (SOFR30D - DGS2)",
-    "spread_5y": "Spread 5Y (SOFR90D - DGS5)",
-    "spread_10y": "Spread 10Y (SOFR180D - DGS10)",
+    "spread_2y": "Spread 2Y (OIS 2Y - DGS2)",
+    "spread_5y": "Spread 5Y (OIS 5Y - DGS5)",
+    "spread_10y": "Spread 10Y (OIS 10Y - DGS10)",
 }
 
 # Which Treasury yield to pair with each spread for bivariate analysis
@@ -103,7 +103,7 @@ def plot_correlation_matrix(df: pd.DataFrame) -> None:
     Useful for spotting redundancy and co-movement.
     """
     cols = ["DGS2", "DGS5", "DGS10",
-            "SOFR", "SOFR30DAYAVG", "SOFR90DAYAVG", "SOFR180DAYAVG",
+            "ois_2y", "ois_5y", "ois_10y",
             "spread_2y", "spread_5y", "spread_10y"]
     # Only include columns that exist in the data
     cols = [c for c in cols if c in df.columns]
@@ -117,6 +117,74 @@ def plot_correlation_matrix(df: pd.DataFrame) -> None:
     fig.savefig(FIGURES_DIR / "correlation_matrix.png", dpi=150)
     plt.close(fig)
     print("  Saved correlation_matrix.png")
+
+
+def plot_spread_move_overview(df: pd.DataFrame) -> None:
+    """
+    Four-panel overview: the three OIS-Treasury spreads plus the MOVE index.
+
+    Layout (4 rows, shared x-axis):
+      Row 1: spread_2y  (OIS 2Y - DGS2)
+      Row 2: spread_5y  (OIS 5Y - DGS5)
+      Row 3: spread_10y (OIS 10Y - DGS10)
+      Row 4: MOVE index (bp)
+
+    Spread panels include a dashed zero line.
+    MOVE panel shades the high-vol regime (above rolling 60-day median).
+    """
+    if "MOVE" not in df.columns:
+        print("  WARNING: MOVE column not found, skipping overview plot.")
+        return
+
+    FIGURES_DIR.mkdir(parents=True, exist_ok=True)
+
+    fig, axes = plt.subplots(4, 1, figsize=(14, 12), sharex=True)
+    fig.subplots_adjust(hspace=0.12)
+
+    spread_meta = [
+        ("spread_2y",  "OIS 2Y − DGS2 (pp)",  "steelblue"),
+        ("spread_5y",  "OIS 5Y − DGS5 (pp)",  "darkorange"),
+        ("spread_10y", "OIS 10Y − DGS10 (pp)", "seagreen"),
+    ]
+
+    for ax, (col, ylabel, color) in zip(axes[:3], spread_meta):
+        data = df[col].dropna()
+        ax.plot(data.index, data, linewidth=0.8, color=color)
+        ax.axhline(0, color="black", linestyle="--", linewidth=0.5, alpha=0.6)
+        ax.set_ylabel(ylabel, fontsize=9)
+        ax.yaxis.set_label_coords(-0.06, 0.5)
+        ax.xaxis.set_major_locator(mdates.YearLocator())
+        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+        ax.tick_params(axis="x", labelbottom=False)
+
+    # MOVE panel
+    ax_move = axes[3]
+    move = df["MOVE"].dropna()
+    ax_move.plot(move.index, move, linewidth=0.8, color="firebrick", label="MOVE")
+
+    # Rolling 60-day median as a reference line
+    move_median = move.rolling(60, min_periods=60).median()
+    ax_move.plot(move_median.index, move_median, linewidth=1.0,
+                 color="black", linestyle="--", alpha=0.7, label="60d median")
+
+    # Shade high-vol periods (MOVE above its 60-day median)
+    above = move > move_median
+    ax_move.fill_between(move.index, move.min() * 0.95, move,
+                         where=above, alpha=0.12, color="firebrick",
+                         label="High-vol (MOVE > 60d median)")
+
+    ax_move.set_ylabel("MOVE index (bp)", fontsize=9)
+    ax_move.yaxis.set_label_coords(-0.06, 0.5)
+    ax_move.xaxis.set_major_locator(mdates.YearLocator())
+    ax_move.xaxis.set_major_formatter(mdates.DateFormatter("%Y"))
+    ax_move.legend(fontsize=8, loc="upper right")
+
+    fig.suptitle("OIS–Treasury Spreads and MOVE Volatility Index", fontsize=12, y=1.01)
+
+    out_path = FIGURES_DIR / "spread_move_overview.png"
+    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close(fig)
+    print(f"  Saved spread_move_overview.png")
 
 
 def run_eda(df: pd.DataFrame) -> pd.DataFrame:
@@ -135,6 +203,7 @@ def run_eda(df: pd.DataFrame) -> pd.DataFrame:
     plot_time_series(df)
     plot_bivariate(df)
     plot_correlation_matrix(df)
+    plot_spread_move_overview(df)
 
     return df
 
