@@ -229,14 +229,14 @@ We find robust mean reversion in OIS-Treasury spreads across three maturities, 1
 
 **Alignment with plan.** Our collaboration plan called for divided ownership across data, inference, and ML — that structure held throughout. The biggest deviation was a time-consuming mid-project data pivot to real LSEG OIS par rates.
 
-**What went well / not well.** Versioned outputs in `outputs/` made handoffs frictionless. What did not go well: we underestimated the data-pivot cost and initially skipped BH-FDR correction, requiring a mid-project rerun of all inference.
+**What went well / not well.** Versioned outputs made handoffs frictionless and we divided responsibilities well. What did not go well: we underestimated the data-pivot cost and initially skipped BH-FDR correction, requiring a mid-project rerun of all inference.
 
 **What we'd do differently.** Start with real swap data, investigate more advanced statistical inference methods earlier to save time, further split responsibilities between people so the same people aren't working on the same task.
 
-**Sharing plan.** All code, data, and figures are in the shared GitHub repository (\href{https://github.com/crl65/COMPSCI216-Project}{\texttt{github.com/crl65/COMPSCI216-Project}}).. We plan to keep the repository public.
+**Sharing plan.** All code, data, and figures are in the shared GitHub repository (\href{https://github.com/cleibowitz/COMPSCI216-Project}{\texttt{github.com/crl65/COMPSCI216-Project}}).. We plan to keep the repository public.
 
 # AI Disclosure
-Artificial Intelligence Tools: ChatGPT 5.2 via ChatGPT.com. Artificial Intelligence Tools: Claude Opus 4.6 via Claude Code. Artificial Intelligence Tools: Claude Sonnet 4.5 5.2 Claude Code. Methodology: ChatGPT was used for determining EDA methodology given the dataset. Methodology: ChatGPT and Claude were used for designing the research framework and for analyzing RQs. Methodology: Claude was used to aid in researching and understanding more advanced statistical inference concepts than those covered in class. Methodology: Claude Code was used for code syntax execution. Writing -- Review and Editing: Claude Code (within Quarto) was used for assistance in writing and editing.\newpage
+Artificial Intelligence Tools: ChatGPT 5.2 via ChatGPT.com. Artificial Intelligence Tools: Claude Opus 4.6 via Claude Code. Artificial Intelligence Tools: Claude Sonnet 4.5 via Claude Code. Methodology: ChatGPT was used for determining EDA methodology given the dataset. Methodology: ChatGPT and Claude were used for designing the research framework and for analyzing RQs. Methodology: Claude was used to aid in researching and understanding more advanced statistical inference concepts than those covered in class. Methodology: Claude Code was used for code syntax execution. Writing -- Review and Editing: Claude Code (within Quarto) was used for assistance in writing and editing.\newpage
 
 # Appendix A — Full Data Pipeline
 

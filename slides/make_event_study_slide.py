@@ -15,7 +15,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 
 # ── Paths ────────────────────────────────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 DATA  = ROOT / "data" / "processed" / "final_dataset_with_signals.parquet"
 OUT   = ROOT / "outputs" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)

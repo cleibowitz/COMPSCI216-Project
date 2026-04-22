@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import numpy as np
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUT = PROJECT_ROOT / "outputs" / "figures" / "regime_filter_bars.png"
 
 # ── Data (from outputs/backtest_metrics.csv) ──────────────────────────────────

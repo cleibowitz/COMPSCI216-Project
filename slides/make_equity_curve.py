@@ -11,7 +11,7 @@ import matplotlib.ticker as mticker
 import numpy as np
 import pandas as pd
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUT = PROJECT_ROOT / "outputs" / "figures" / "equity_curve.png"
 
 # ── Load trades ────────────────────────────────────────────────────────────────

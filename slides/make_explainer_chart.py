@@ -16,7 +16,7 @@ import matplotlib.patches as mpatches
 from matplotlib.lines import Line2D
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-ROOT = Path(__file__).resolve().parent
+ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data" / "processed" / "final_dataset_with_signals.parquet"
 OUT  = ROOT / "outputs" / "figures"
 OUT.mkdir(parents=True, exist_ok=True)

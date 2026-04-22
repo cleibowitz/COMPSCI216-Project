@@ -16,7 +16,7 @@ import pandas as pd
 from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 FIGURES_DIR  = PROJECT_ROOT / "outputs" / "figures"
 
 # ── Load data ─────────────────────────────────────────────────────────────────

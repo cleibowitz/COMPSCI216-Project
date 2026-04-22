@@ -15,10 +15,10 @@ import matplotlib.ticker as mticker
 import numpy as np
 import pandas as pd
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.analysis.stats_utils import compute_z_scores, extract_signal_events
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 OUT = PROJECT_ROOT / "outputs" / "figures" / "hmm_regime_signals.png"
 
 # ── Load & prepare data ───────────────────────────────────────────────────────

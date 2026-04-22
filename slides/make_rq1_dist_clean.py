@@ -6,7 +6,7 @@ z < -2 (blue) vs z > +2 (red).  Uses identical event-extraction logic as rq1.py.
 import sys
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(PROJECT_ROOT))
 
 import matplotlib.pyplot as plt
