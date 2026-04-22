@@ -252,17 +252,17 @@ A mechanical scan for `spread_2y > 1.0 pp` returned 23 observations, clustered i
 
 ## Supplementary EDA figures
 
-![Spread time series (OIS minus matched-maturity Treasury). The 2Y artifacts of 2022 are visible as isolated upward spikes.](outputs/figures/spread_time_series.png){#fig-spread-ts-app width=92%}
+![Spread time series (OIS minus matched-maturity Treasury). The 2Y artifacts of 2022 are visible as isolated upward spikes.](outputs/figures/spread_time_series.png){#fig-spread-ts-app width=92% fig-pos="H"}
 
-![Spread distributions by maturity. Red dashed lines mark sample means. The 2Y right tail is dominated by LSEG quoting artifacts.](outputs/figures/spread_histograms.png){#fig-histograms-app width=92%}
+![Spread distributions by maturity. Red dashed lines mark sample means. The 2Y right tail is dominated by LSEG quoting artifacts.](outputs/figures/spread_histograms.png){#fig-histograms-app width=92% fig-pos="H"}
 
-![60-day rolling z-scores with $\pm 2$ thresholds marked. Breach rates are consistent with a mean-reverting series with moderately fat tails.](outputs/figures/z_score_time_series.png){#fig-ztimeseries-app width=92%}
+![60-day rolling z-scores with $\pm 2$ thresholds marked. Breach rates are consistent with a mean-reverting series with moderately fat tails.](outputs/figures/z_score_time_series.png){#fig-ztimeseries-app width=92% fig-pos="H"}
 
-![Overview panel: three spreads stacked with the MOVE index. Shaded regions mark high-volatility episodes (MOVE above rolling 60-day median).](outputs/figures/spread_move_overview.png){#fig-overview-app width=92%}
+![Overview panel: three spreads stacked with the MOVE index. Shaded regions mark high-volatility episodes (MOVE above rolling 60-day median).](outputs/figures/spread_move_overview.png){#fig-overview-app width=92% fig-pos="H"}
 
-![Spread-vs-yield scatter: OIS rates vs. matched-maturity Treasuries. The line-of-best-fit confirms the systematic negative offset.](outputs/figures/spread_vs_yield_scatter.png){#fig-scatter-app width=78%}
+![Spread-vs-yield scatter: OIS rates vs. matched-maturity Treasuries. The line-of-best-fit confirms the systematic negative offset.](outputs/figures/spread_vs_yield_scatter.png){#fig-scatter-app width=78% fig-pos="H"}
 
-![Pairwise correlation matrix across spreads, yields, MOVE, and rolling z-scores.](outputs/figures/correlation_matrix.png){#fig-corr-app width=78%}
+![Pairwise correlation matrix across spreads, yields, MOVE, and rolling z-scores.](outputs/figures/correlation_matrix.png){#fig-corr-app width=78% fig-pos="H"}
 
 \newpage
 
@@ -302,11 +302,15 @@ Maturity & Signal & Horizon & n & Mean (bps) & Cohen's d & t-stat & $p_{\text{BH
 
 ## RQ2 p-value heatmap
 
-![P-values for the 5Y spread at the 10-day horizon across all window $\times$ threshold combinations. Green = significant. All nine cells point in the same direction — the result does not depend on parameter choice.](outputs/figures/rq2_heatmap.png){#fig-rq2heat width=85%}
+The heatmap below shows BH-corrected p-values for the 5Y spread at the 10-day horizon across all nine window $\times$ threshold combinations. Every cell carries the predicted sign; green cells survive FDR correction.
+
+![P-values for the 5Y spread at the 10-day horizon across all window $\times$ threshold combinations. Green = significant. All nine cells point in the same direction — the result does not depend on parameter choice.](outputs/figures/rq2_heatmap.png){#fig-rq2heat width=85% fig-pos="H"}
 
 ## RQ2 coefficient plot
 
-![RQ2 coefficient plot for the 5Y spread at the 10-day horizon. Points are mean forward changes in bps; bars are 95% CIs. Sign and magnitude are stable across all nine (window, threshold) combinations.](outputs/figures/rq2_coefplot.png){#fig-rq2coef-app width=92%}
+The coefficient plot below shows point estimates and 95% CIs for the 5Y spread at the 10-day horizon. All nine combinations yield positive mean forward changes, confirming the stability of the reversion signal.
+
+![RQ2 coefficient plot for the 5Y spread at the 10-day horizon. Points are mean forward changes in bps; bars are 95% CIs. Sign and magnitude are stable across all nine (window, threshold) combinations.](outputs/figures/rq2_coefplot.png){#fig-rq2coef-app width=92% fig-pos="H"}
 
 ## RQ3 Part A — Rate-regime split
 
@@ -327,11 +331,15 @@ Maturity & Signal & Rising (bps, n) & Falling (bps, n) & $p$-diff & Cohen's d \\
 
 ## RQ3 Part B — MOVE scatter
 
-![MOVE level at signal date vs. 10-day forward spread change, pooling 5Y and 10Y events. For positive-z signals (spread too wide), higher MOVE predicts a larger snap-back — OLS slope $<0$, $r \approx -0.34$. A simple high/low split misses this; the continuous MOVE level is needed.](outputs/figures/rq3_move_scatter.png){#fig-movescatter width=85%}
+The scatter below pools all 5Y and 10Y signal events and plots MOVE level at entry against the 10-day forward spread change. The relationship is nonlinear and direction-dependent: for rich-spread signals (z $> +2$), higher implied volatility predicts a sharper snap-back, confirming the value of the continuous MOVE measure over a simple high/low binary split.
+
+![MOVE level at signal date vs. 10-day forward spread change, pooling 5Y and 10Y events. For positive-z signals (spread too wide), higher MOVE predicts a larger snap-back — OLS slope $<0$, $r \approx -0.34$. A simple high/low split misses this; the continuous MOVE level is needed.](outputs/figures/rq3_move_scatter.png){#fig-movescatter width=85% fig-pos="H"}
 
 ## RQ3 Part C — Joint heatmap
 
-![Joint 2$\times$2 heatmap: mean 10-day forward change (bps) in each rate$\times$vol regime cell, by maturity and signal direction. Star annotations are raw t-test p-values.](outputs/figures/rq3_heatmap.png){#fig-rq3heat-app width=92%}
+The heatmap below shows mean 10-day forward change in each of the four rate $\times$ volatility regime cells, separately for each maturity and signal direction. It makes clear that rate regime drives the cross-cell variation while volatility regime adds little incremental structure.
+
+![Joint 2$\times$2 heatmap: mean 10-day forward change (bps) in each rate$\times$vol regime cell, by maturity and signal direction. Star annotations are raw t-test p-values.](outputs/figures/rq3_heatmap.png){#fig-rq3heat-app width=92% fig-pos="H"}
 
 ## RQ3 Part D — Regime transition analysis (null finding)
 
@@ -373,7 +381,7 @@ From S1    & 0.005 & 0.995 \\
 
 Expected dwell times: ~171 days in S0, ~194 days in S1. Manual rate-regime agreement: 66%. Pre-2024-only refit produces 100% identical OOS state assignments (n = 591 days).
 
-![HMM regime decoding. Top: 5Y spread colored by Viterbi state. Bottom: MOVE colored by the same assignments. State 0 (red) concentrates in high-MOVE stress episodes.](outputs/figures/hmm_regimes.png){#fig-hmm-app width=92%}
+![HMM regime decoding. Top: 5Y spread colored by Viterbi state. Bottom: MOVE colored by the same assignments. State 0 (red) concentrates in high-MOVE stress episodes.](outputs/figures/hmm_regimes.png){#fig-hmm-app width=92% fig-pos="H"}
 
 ## Random Forest — metrics and baselines
 
@@ -409,13 +417,13 @@ $\Delta$AUC (adding hmm\_state)    & $-$0.122 \\
 
 Including `hmm_state` as a continuous feature reduces AUC by 0.122. The regime signal is real but the RF cannot exploit it productively in a tree-split representation with only 56 training events.
 
-![RF confusion matrix on 29 OOS events.](outputs/figures/rf_confusion.png){#fig-rfcm-app width=70%}
+![RF confusion matrix on 29 OOS events.](outputs/figures/rf_confusion.png){#fig-rfcm-app width=70% fig-pos="H"}
 
-![RF ROC curve on OOS events.](outputs/figures/rf_roc.png){#fig-rfroc-app width=70%}
+![RF ROC curve on OOS events.](outputs/figures/rf_roc.png){#fig-rfroc-app width=70% fig-pos="H"}
 
-![RF feature importance (mean decrease in impurity). MOVE level and its 60-day z-score dominate.](outputs/figures/rf_importance.png){#fig-rfimp-app width=78%}
+![RF feature importance (mean decrease in impurity). MOVE level and its 60-day z-score dominate.](outputs/figures/rf_importance.png){#fig-rfimp-app width=78% fig-pos="H"}
 
-![SHAP summary plot. High MOVE values increase $P(\text{reversion})$; large absolute z-scores push in the same direction. `hmm_state` contributes almost nothing.](outputs/figures/rf_shap.png){#fig-rfshap-app width=78%}
+![SHAP summary plot. High MOVE values increase $P(\text{reversion})$; large absolute z-scores push in the same direction. `hmm_state` contributes almost nothing.](outputs/figures/rf_shap.png){#fig-rfshap-app width=78% fig-pos="H"}
 
 \newpage
 
@@ -438,41 +446,41 @@ State 0 (stress)   &  9 & 33.3 & $-$0.08 & $-$0.7 \\
 
 The 9 State-0 trades in Strategy 1 contributed essentially all of the drawdown and none of the net P&L. Strategy 3 (HMM-filtered) simply omits these trades.
 
-## Trade log (first 20 executed rules-based trades, 2024-01-02 onward)
+## Trade log (all 20 executed rules-based trades, 2024-01-02 onward)
 
 ```{=latex}
 \begin{center}
 \footnotesize
-\begin{tabular}{lrlrrrrl}
+\begin{tabular}{lrlrrrl r}
 \hline
-Entry date & Sign & Exit date & Hold (d) & Entry z & Exit z & P\&L (bps) & State \\
+Entry date & Sign & Exit date & Hold (d) & Entry z & Net P\&L (bps) & Exit reason & State \\
 \hline
-2024-02-13 & $+$1 & 2024-02-27 & 10 & $-$2.14 & $-$1.32 & $+$3.1 & 1 \\
-2024-03-19 & $+$1 & 2024-04-02 & 10 & $-$2.08 & $-$0.87 & $+$4.2 & 1 \\
-2024-05-28 & $-$1 & 2024-06-11 & 10 & $+$2.11 & $+$0.44 & $+$2.8 & 1 \\
-2024-07-10 & $-$1 & 2024-07-24 & 10 & $+$2.04 & $+$1.55 & $+$1.2 & 1 \\
-2024-09-04 & $+$1 & 2024-09-10 &  4 & $-$2.22 & $+$0.08 & $+$3.5 & 1 \\
-2024-10-22 & $-$1 & 2024-11-05 & 10 & $+$2.09 & $+$0.91 & $+$1.8 & 0 \\
-2024-12-03 & $+$1 & 2024-12-17 & 10 & $-$2.06 & $-$2.31 & $-$1.4 & 0 \\
-2025-01-08 & $-$1 & 2025-01-22 & 10 & $+$2.15 & $+$2.02 & $-$0.2 & 0 \\
-2025-02-18 & $+$1 & 2025-03-04 & 10 & $-$2.25 & $-$1.10 & $+$2.6 & 1 \\
-2025-03-25 & $+$1 & 2025-04-08 & 10 & $-$2.03 & $-$1.61 & $+$0.9 & 1 \\
-2025-04-30 & $-$1 & 2025-05-07 &  5 & $+$2.18 & $-$0.12 & $+$3.2 & 1 \\
-2025-06-11 & $-$1 & 2025-06-25 & 10 & $+$2.06 & $+$1.48 & $+$1.1 & 0 \\
-2025-07-17 & $+$1 & 2025-07-31 & 10 & $-$2.12 & $-$1.90 & $+$0.6 & 0 \\
-2025-08-26 & $+$1 & 2025-09-09 & 10 & $-$2.04 & $-$2.14 & $-$0.8 & 0 \\
-2025-10-02 & $-$1 & 2025-10-16 & 10 & $+$2.10 & $+$1.72 & $+$0.7 & 0 \\
-2025-11-06 & $+$1 & 2025-11-20 & 10 & $-$2.07 & $-$1.85 & $+$0.4 & 1 \\
-2025-12-15 & $-$1 & 2025-12-29 & 10 & $+$2.02 & $+$1.91 & $-$0.3 & 0 \\
-2026-01-22 & $+$1 & 2026-02-05 & 10 & $-$2.09 & $-$0.63 & $+$2.8 & 1 \\
-2026-02-25 & $-$1 & 2026-03-11 & 10 & $+$2.13 & $+$1.20 & $+$1.4 & 1 \\
-2026-03-18 & $+$1 & 2026-03-24 &  4 & $-$2.18 & $+$0.05 & $+$1.8 & 1 \\
+2024-01-02 & $+$1 & 2024-01-08  &  4 & $-$2.04 & $+$6.6 & z\_cross  & 1 \\
+2024-01-24 & $-$1 & 2024-01-31  &  5 & $+$2.30 & $+$6.2 & z\_cross  & 1 \\
+2024-02-01 & $-$1 & 2024-02-15  & 10 & $+$2.57 & $-$0.6 & max\_hold & 1 \\
+2024-06-17 & $+$1 & 2024-06-28  &  9 & $-$2.14 & $+$2.1 & z\_cross  & 1 \\
+2024-07-01 & $+$1 & 2024-07-15  & 10 & $-$2.69 & $-$3.3 & max\_hold & 1 \\
+2024-07-22 & $+$1 & 2024-08-05  & 10 & $-$2.01 & $+$2.3 & max\_hold & 1 \\
+2024-09-30 & $+$1 & 2024-10-14  & 10 & $-$2.25 & $+$2.9 & z\_cross  & 0 \\
+2024-10-25 & $+$1 & 2024-11-08  & 10 & $-$2.18 & $-$0.8 & max\_hold & 0 \\
+2025-01-16 & $-$1 & 2025-01-30  & 10 & $+$2.23 & $-$1.4 & max\_hold & 0 \\
+2025-02-13 & $-$1 & 2025-02-27  & 10 & $+$2.08 & $+$2.2 & max\_hold & 0 \\
+2025-04-02 & $+$1 & 2025-04-16  & 10 & $-$4.14 & $-$1.9 & max\_hold & 1 \\
+2025-04-21 & $+$1 & 2025-05-05  & 10 & $-$2.27 & $+$1.0 & max\_hold & 1 \\
+2025-07-04 & $+$1 & 2025-07-18  & 10 & $-$2.54 & $+$1.3 & max\_hold & 1 \\
+2025-09-17 & $-$1 & 2025-09-18  &  1 & $+$2.14 & $+$2.9 & z\_cross  & 1 \\
+2025-10-14 & $-$1 & 2025-10-28  & 10 & $+$2.77 & $-$2.2 & max\_hold & 0 \\
+2025-11-03 & $-$1 & 2025-11-11  &  6 & $+$2.16 & $+$4.3 & z\_cross  & 0 \\
+2025-11-25 & $-$1 & 2025-12-09  & 10 & $+$2.22 & $-$0.4 & max\_hold & 0 \\
+2025-12-10 & $-$1 & 2025-12-24  & 10 & $+$2.41 & $-$3.0 & max\_hold & 0 \\
+2026-03-06 & $+$1 & 2026-03-20  & 10 & $-$2.17 & $-$2.3 & max\_hold & 0 \\
+2026-03-24 & $+$1 & 2026-04-07  & 10 & $-$2.56 & $+$0.5 & max\_hold & 1 \\
 \hline
 \end{tabular}
 \end{center}
 ```
 
-*Trade-log values are reproduced from `outputs/tables/backtest_trades.csv`; for auditability, see the full CSV in the repository.*
+*Trade-log values are reproduced from `outputs/backtest_trades.csv`; for auditability, see the full CSV in the repository.*
 
 \newpage
 
